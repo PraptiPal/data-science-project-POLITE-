@@ -55,3 +55,31 @@ def visualize():
 
 if selOpt == choices[1]:
     AnalyseSentiment()
+st.header("What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user. It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.")
+sidebar=st.sidebar
+sidebar.title("POLITE-Analyzing sentiments in twitter")
+sidebar.header("Choose Your Option")
+choices=["Select OPtion","enter a username"]
+selOpt = sidebar.selectbox("Choose what to do", choices)
+
+
+
+def fetchTweets():
+    api= create_api()
+    with st.spinner("Loading Viwe..."):
+        tweets=st.text_input("enter a username")
+        tweets_data=api.search(tweets)
+        for tweet in tweets_data:
+            st.write(tweet)
+            st.write()
+            return tweet
+        
+
+def cleanTweets():
+    twt=fetchTweets()
+    tokens = nltk.sent_tokenize(twt)
+
+
+
+if selOpt == choices[1]:
+    fetchTweets()
