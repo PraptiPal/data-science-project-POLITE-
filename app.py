@@ -1,3 +1,5 @@
+from typing import Counter
+from twitter import create_api
 import nltk
 # nltk.download('popular')
 from textblob import TextBlob
