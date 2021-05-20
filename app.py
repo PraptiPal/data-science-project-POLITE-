@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
+from visualization import *
 
 api = create_api()
 st.title("Sentiment Analysis For Tweets ")
@@ -20,15 +21,19 @@ selOpt = sidebar.selectbox("Choose what to do", choices)
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
         user_input = st.text_input("Enter the Twitter Handle or Hashtag")
-
-        if user_input:
-            pre_tweets = fetchTweets(user_input)
-
+        btn = st.checkbox('Submit')
+        if user_input and btn:
+            # pre_tweets = fetchTweets(user_input)
+            # st.text(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
-            
 
-def fetchTweets(keyword, c = 100):
-    tweets_data = api.search(keyword, count = c)
+            btn = st.checkbox('Visualize Result')
+            if btn:
+                visualize()
+
+
+def fetchTweets(keyword, c=100):
+    tweets_data = api.search(keyword, count=c)
     print(tweets_data[0])
 
     raw_tweets = []
@@ -39,8 +44,9 @@ def fetchTweets(keyword, c = 100):
 
     return cleaned_tweets
 
+
 def cleanTweets(tweets):
-    pass
+    return tweets
 
 
 def generateSetiment():
@@ -48,7 +54,16 @@ def generateSetiment():
 
 
 def visualize():
-    pass
+
+    st.header("Sentiment Results")
+    sentiments = {
+        'positive': 30,
+        'negative': 27,
+        'neutral': 43
+    }
+
+    st.plotly_chart(plotBar(list(sentiments.keys()),
+                            list(sentiments.values())))
 
 
 if selOpt == choices[1]:
