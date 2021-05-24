@@ -7,7 +7,14 @@ from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
 from visualization import *
 
-api = create_api()
+
+@st.cache()
+def init():
+    return create_api()
+
+
+api = init()
+
 st.title("Sentiment Analysis For Tweets ")
 st.image('NLP.jpg')
 st.header("")
@@ -23,8 +30,8 @@ def AnalyseSentiment():
         user_input = st.text_input("Enter the Twitter Handle or Hashtag")
         btn = st.checkbox('Submit')
         if user_input and btn:
-            # pre_tweets = fetchTweets(user_input)
-            # st.text(pre_tweets)
+            pre_tweets = fetchTweets(user_input)
+            st.text(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
             btn = st.checkbox('Visualize Result')
@@ -32,9 +39,11 @@ def AnalyseSentiment():
                 visualize()
 
 
+@st.cache()
 def fetchTweets(keyword, c=100):
+    print('tweets fetched')
     tweets_data = api.search(keyword, count=c)
-    print(tweets_data[0])
+    # print(tweets_data[0])
 
     raw_tweets = []
     for tweet in tweets_data:
