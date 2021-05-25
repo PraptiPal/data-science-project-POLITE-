@@ -1,13 +1,17 @@
 from typing import Counter
-from twitter import create_api
 import nltk
-# nltk.download('popular')
+#nltk.download('stopwords')
+#nltk.download('wordnet')
+import re
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer, WordNetLemmatizer
+from nltk.tokenize import RegexpTokenizer
 from textblob import TextBlob
 import streamlit as st
 import pandas as pd
 from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
-from visualization import *
+#from visualization import *
 
 
 @st.cache()
@@ -18,8 +22,8 @@ def init():
 api = init()
 
 st.title("Sentiment Analysis For Tweets ")
+st.header("What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user. It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.")
 st.image('NLP.jpg')
-st.header("")
 
 sidebar = st.sidebar
 sidebar.header("Choose Your Option")
@@ -57,7 +61,18 @@ def fetchTweets(keyword, c=100):
 
 
 def cleanTweets(tweets):
-    return tweets
+    tweet =list()
+    for twt in tweets:
+        word= twt.split()
+        for w in word:
+            tweet.append(w)
+
+    
+    tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
+    stopword_set = set(stopwords.words("english"))
+    tweets = [w for w in word if w not in stopword_set]
+    cleanedtweets = " ".join(tweets)
+    return cleanedtweets
 
 
 def generateSetiment():
@@ -79,31 +94,3 @@ def visualize():
 
 if selOpt == choices[1]:
     AnalyseSentiment()
-st.header("What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user. It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.")
-sidebar=st.sidebar
-sidebar.title("POLITE-Analyzing sentiments in twitter")
-sidebar.header("Choose Your Option")
-choices=["Select OPtion","enter a username"]
-selOpt = sidebar.selectbox("Choose what to do", choices)
-
-
-
-def fetchTweets():
-    api= create_api()
-    with st.spinner("Loading Viwe..."):
-        tweets=st.text_input("enter a username")
-        tweets_data=api.search(tweets)
-        for tweet in tweets_data:
-            st.write(tweet)
-            st.write()
-            return tweet
-        
-
-def cleanTweets():
-    twt=fetchTweets()
-    tokens = nltk.sent_tokenize(twt)
-
-
-
-if selOpt == choices[1]:
-    fetchTweets()
