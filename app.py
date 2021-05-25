@@ -1,7 +1,7 @@
 from typing import Counter
 import nltk
-#nltk.download('stopwords')
-#nltk.download('wordnet')
+# nltk.download('stopwords')
+# nltk.download('wordnet')
 import re
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
@@ -37,7 +37,7 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             pre_tweets = fetchTweets(user_input)
-            st.text(pre_tweets)
+            st.write(   pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
             btn = st.checkbox('Visualize Result')
@@ -54,24 +54,22 @@ def fetchTweets(keyword, c=100):
     raw_tweets = []
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
-
     cleaned_tweets = cleanTweets(raw_tweets)
 
     return cleaned_tweets
 
 
 def cleanTweets(tweets):
-    tweet =list()
+
+    cleanedtweets = []
     for twt in tweets:
-        word= twt.split()
+        tweet = list()
+        word = twt.split()
         for w in word:
             tweet.append(w)
+        tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
+        cleanedtweets.append(' '.join(tweet))
 
-    
-    tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
-    stopword_set = set(stopwords.words("english"))
-    tweets = [w for w in word if w not in stopword_set]
-    cleanedtweets = " ".join(tweets)
     return cleanedtweets
 
 

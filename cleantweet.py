@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
-from tokenize import tokenize
+import tokenize
 
 def cleanTweets():
 
