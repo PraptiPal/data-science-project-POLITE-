@@ -11,7 +11,7 @@ import streamlit as st
 import pandas as pd
 from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
-#from visualization import *
+from visualization import *
 
 
 @st.cache()
@@ -37,12 +37,13 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             pre_tweets = fetchTweets(user_input)
-            st.write(   pre_tweets)
+            st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
             btn = st.checkbox('Visualize Result')
             if btn:
-                visualize()
+                sentiments = generateSentiment(pre_tweets)
+                visualize(sentiments)
 
 
 @st.cache()
@@ -73,18 +74,25 @@ def cleanTweets(tweets):
     return cleanedtweets
 
 
-def generateSetiment():
-    pass
+def generateSentiment(tweets):
+    sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
+
+    for tweet in tweets:
+        blob = TextBlob(tweet)
+        if(blob.sentiment.polarity > 0):
+            sentimentList['positive'] += 1
+        elif(blob.sentiment.polarity < 0):
+            sentimentList['negative'] += 1
+        elif(blob.sentiment.polarity == 0):
+            sentimentList['neutral'] += 1
+
+    st.write(sentimentList)
+    return sentimentList
 
 
-def visualize():
+def visualize(sentiments):
 
     st.header("Sentiment Results")
-    sentiments = {
-        'positive': 30,
-        'negative': 27,
-        'neutral': 43
-    }
 
     st.plotly_chart(plotBar(list(sentiments.keys()),
                             list(sentiments.values())))
