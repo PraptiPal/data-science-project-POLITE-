@@ -97,6 +97,7 @@ def visualize(sentiments):
     st.plotly_chart(plotBar(list(sentiments.keys()),
                             list(sentiments.values())))
 
-
-if selOpt == choices[1]:
+if selOpt == choices[0]:
+    intro()
+elif selOpt == choices[1]:
     AnalyseSentiment()
