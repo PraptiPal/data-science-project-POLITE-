@@ -1,5 +1,7 @@
 from plotly import graph_objects as go
-import plotly_express as px
+import plotly.express as px
+import numpy as np
+
 
 
 def plotBar(x, y, title="default title", xlabel="", ylabel=""):
