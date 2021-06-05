@@ -38,7 +38,6 @@ def ProjectOverview():
     :What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user.
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
     ! Flow-Chart-Sentiment-Analysis.png
-
     ### Features of Project
     1. Fetch the tweets from twitter using api
     2. Cleaning the tweets so as to accurately so that sentiment analyzing takes place accurately
@@ -46,7 +45,6 @@ def ProjectOverview():
     ! sentiment_analysis.jpg
     4. The best way to understand the analysis is through visualization. The results are displayed in form of graphs
     for a better understanding.
-
     
     """)
 
