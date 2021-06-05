@@ -53,12 +53,17 @@ def ProjectOverview():
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
         user_input = st.text_input("Enter the Twitter Handle or Hashtag")
-        tweet_count = st.text_input("Enter the number of tweets you want to analyze")
+        tweet_count = st.text_input(
+            "Enter the number of tweets you want to analyze")
         btn = st.checkbox('Submit')
         if user_input and btn:
-            user_details= getuser(user_input)
+            user_details = getuser(user_input)
+            st.markdown(f"""
+            <img style="border-radius: 100%;" src="{user_details['avatar']}">
+            <h2>{user_details['name']}</h2>
+            """, unsafe_allow_html=True)
             st.write(user_details)
-            pre_tweets = fetchTweets(user_input,tweet_count)
+            pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
@@ -67,10 +72,16 @@ def AnalyseSentiment():
                 sentiments, subjectivity = generateSentiment(pre_tweets)
                 visualize(sentiments, subjectivity)
 
+
+@st.cache()
 def getuser(username):
-    
+
+    profile = {}
     user_details = api.get_user(username)
-    return user_details
+    profile['name'] = user_details._json['name']
+    profile['avatar'] = user_details._json['profile_image_url_https']
+    return profile
+
 
 @st.cache()
 def fetchTweets(keyword, c):
@@ -136,10 +147,15 @@ def visualize(sentiments, subjctivity):
     # fig, ax = plt.subplots()
     # ax.hist(subjctivity, bins=20)
     # st.pyplot(fig)
-    df1 = pd.DataFrame(sentiments)
-    st.dataframe(df1)
+    # df1 = pd.DataFrame(sentiments)
+    # st.dataframe(df1)
 
-    #fig=piechart(df,'sentimentList')
+    pie_fig = plotpie(tuple(sentiments.keys()), list(
+        sentiments.values()), 'My title')
+    st.plotly_chart(pie_fig)
+
+    # fig=piechart(df,'sentimentList')
+
 
 if selOpt == choices[1]:
     ProjectOverview()

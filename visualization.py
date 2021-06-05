@@ -1,3 +1,4 @@
+from re import template
 from plotly import graph_objects as go
 import plotly.express as px
 import numpy as np
@@ -28,3 +29,13 @@ def plotHistogram(dataframe, x, title="default title"):
 
     return fig
 
+def plotpie(labels, values, title):
+    layout = go.Layout(title=title, template="plotly_dark")
+    fig = go.Figure(layout=layout)
+    fig.add_trace(go.Pie(labels=labels, values=values, textinfo='label+percent', hole=0.2,
+                         marker=dict(colors=['#f7d468', '#74cb35'],
+                                     line_color='Gray',
+                                     line_width=1),
+                         textfont={'color': '#000', 'size': 12},
+                         textfont_size=12))
+    return fig
