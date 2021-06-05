@@ -1,3 +1,4 @@
+from os import name
 from typing import Counter
 import nltk
 # nltk.download('stopwords')
@@ -15,7 +16,7 @@ import matplotlib.pyplot as plt
 from visualization import *
 
 
-@st.cache()
+@st.cache(allow_output_mutation=True)
 def init():
     return create_api()
 
@@ -52,9 +53,12 @@ def ProjectOverview():
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
         user_input = st.text_input("Enter the Twitter Handle or Hashtag")
+        tweet_count = st.text_input("Enter the number of tweets you want to analyze")
         btn = st.checkbox('Submit')
         if user_input and btn:
-            pre_tweets = fetchTweets(user_input)
+            user_details= getuser(user_input)
+            st.write(user_details)
+            pre_tweets = fetchTweets(user_input,tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
@@ -63,9 +67,13 @@ def AnalyseSentiment():
                 sentiments, subjectivity = generateSentiment(pre_tweets)
                 visualize(sentiments, subjectivity)
 
+def getuser(username):
+    
+    user_details = api.get_user(username)
+    return user_details
 
 @st.cache()
-def fetchTweets(keyword, c=100):
+def fetchTweets(keyword, c):
     print('tweets fetched')
     tweets_data = api.search(keyword, count=c)
     # print(tweets_data[0])
@@ -128,7 +136,10 @@ def visualize(sentiments, subjctivity):
     # fig, ax = plt.subplots()
     # ax.hist(subjctivity, bins=20)
     # st.pyplot(fig)
+    df1 = pd.DataFrame(sentiments)
+    st.dataframe(df1)
 
+    #fig=piechart(df,'sentimentList')
 
 if selOpt == choices[1]:
     ProjectOverview()
