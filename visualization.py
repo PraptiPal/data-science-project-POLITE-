@@ -1,6 +1,7 @@
 from plotly import graph_objects as go
 import plotly.express as px
 import numpy as np
+import matplotlib as plt
 
 
 def plotBar(x, y, title="default title", xlabel="", ylabel=""):
@@ -26,3 +27,4 @@ def plotHistogram(dataframe, x, title="default title"):
                        )
 
     return fig
+
