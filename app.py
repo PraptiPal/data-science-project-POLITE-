@@ -139,7 +139,7 @@ def visualize(sentiments, subjctivity):
     df1 = pd.DataFrame(sentiments)
     st.dataframe(df1)
 
-    #fig=piechart(df,'sentimentList')
+    fig =piechart(sentimentList,'Pie chart for sentiment analysis')
 
 if selOpt == choices[1]:
     ProjectOverview()
