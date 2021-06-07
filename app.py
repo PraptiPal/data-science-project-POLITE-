@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 from visualization import *
 
 
+
 @st.cache(allow_output_mutation=True)
 def init():
     return create_api()
-
 
 api = init()
 
@@ -33,21 +33,26 @@ selOpt = sidebar.selectbox("Choose what to do", choices)
 
 
 def ProjectOverview():
+    st.image('sentiment_analysis.jpg')
     st.markdown("""
     ## Reviewing the sentiments 
     Polite?
     :What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user.
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
-    ! Flow-Chart-Sentiment-Analysis.png
+    """,unsafe_allow_html=True)
+    st.header('Flowchart that represents the detailed process to handle the tweets')
+    st.image('Flow-Chart-Sentiment-Analysis.png')
+
+    st.markdown(f"""
+    ![alt text for screen readers](E:\data-science-project(POLITE)\sentiment_analysis.jpg "Text to show on mouseover")
     ### Features of Project
     1. Fetch the tweets from twitter using api
     2. Cleaning the tweets so as to accurately so that sentiment analyzing takes place accurately
     3. Counting the positive, negative and neutral tweets and also determining the subjectivity of the tweets.
-    ! sentiment_analysis.jpg
+    **Parameters used to determin the sentiments are -- POLARITY and SUBJECTIVITY**
     4. The best way to understand the analysis is through visualization. The results are displayed in form of graphs
-    for a better understanding.
-    
-    """)
+    for a better understanding. 
+    """,unsafe_allow_html = True)
 
 
 def AnalyseSentiment():
@@ -58,11 +63,25 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
+            #st.markdown(f"""
+            #<img style="border-radius: 100%;" src="{user_details['avatar']}">
+            #<h2>{user_details['name']}</h2>
+            #""", unsafe_allow_html=True)
+
             st.markdown(f"""
+            <h1><b>User Account Details</b></h1>
+            <hr/>
             <img style="border-radius: 100%;" src="{user_details['avatar']}">
-            <h2>{user_details['name']}</h2>
-            """, unsafe_allow_html=True)
-            st.write(user_details)
+            <table style = "width:100%">
+            <tr><td>Account Name {user_details['name']}</td></tr>
+            <tr><td>Handle Name {user_details['screen_name']}</td></tr>          
+            <tr><td>Account Description {user_details['description']}</td></tr>
+            <tr><td>Account created on {user_details['created']}</td></tr>
+            <tr><td>Number Of Followers {user_details['followers']}</td></tr>
+            </table>
+            """,unsafe_allow_html=True)
+
+            #st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
@@ -80,6 +99,10 @@ def getuser(username):
     user_details = api.get_user(username)
     profile['name'] = user_details._json['name']
     profile['avatar'] = user_details._json['profile_image_url_https']
+    profile['screen_name'] = user_details._json['profile_image_url_https']
+    profile['description']=user_details._json['description']
+    profile['created']=user_details._json['created_at']
+    profile['followers']=user_details._json['followers_count']
     return profile
 
 
@@ -124,6 +147,9 @@ def generateSentiment(tweets):
         elif(blob.sentiment.polarity == 0):
             sentimentList['neutral'] += 1
 
+    if sentimentList['positive']> sentimentList['neutral'] & sentimentList['postive'] > sentimentList['negative']:
+        st.write('mostly tweets are positive')
+
     # st.write(sentimentList)
     # st.write(subjctivity)
     # visualize(sentimentList, subjctivity)
@@ -155,6 +181,7 @@ def visualize(sentiments, subjctivity):
     st.plotly_chart(pie_fig)
 
     # fig=piechart(df,'sentimentList')
+    col1, col2, col3 = st.beta_columns(3)
 
 
 if selOpt == choices[1]:
