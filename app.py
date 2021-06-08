@@ -14,6 +14,14 @@ import pandas as pd
 from tweepy_init import create_api
 import matplotlib.pyplot as plt
 from visualization import *
+from database import Search
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+
+engine = create_engine('sqlite:///db.sqlite3')
+
+Session = sessionmaker(bind=engine)
+session = Session()
 
 
 @st.cache(allow_output_mutation=True)
@@ -70,17 +78,17 @@ def AnalyseSentiment():
             # """, unsafe_allow_html=True)
 
             st.markdown(f"""
-            <h1><b>User Account Details</b></h1>
-            <hr/>
-            <img style="border-radius: 100%;" src="{user_details['avatar']}">
-            <table style = "width:100%">
-            <tr><td>Account Name : {user_details['name']}</td></tr>
-            <tr><td>Handle Name {user_details['screen_name']}</td></tr>          
-            <tr><td>Account Description {user_details['description']}</td></tr>
-            <tr><td>Account created on {user_details['created']}</td></tr>
-            <tr><td>Number Of Followers {user_details['followers']}</td></tr>
-            </table>
-            """, unsafe_allow_html=True)
+                <h1><b>User Account Details</b></h1>
+                <hr/>
+                <img style="border-radius: 100%;" src="{user_details['avatar']}">
+                <table style = "width:100%">
+                <tr><td>Account Name : {user_details['name']}</td></tr>
+                <tr><td>Handle Name {user_details['screen_name']}</td></tr>          
+                <tr><td>Account Description {user_details['description']}</td></tr>
+                <tr><td>Account created on {user_details['created']}</td></tr>
+                <tr><td>Number Of Followers {user_details['followers']}</td></tr>
+                </table>
+                """, unsafe_allow_html=True)
 
             # st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
@@ -92,7 +100,17 @@ def AnalyseSentiment():
                 sentiments, subjectivity = generateSentiment(pre_tweets)
                 visualize(sentiments, subjectivity)
 
-            saveData = st.checkbox('Save Data')
+                saveData = st.checkbox('Save Data')
+                if saveData:
+                    try:
+                        search = Search(
+                            keyword=user_input, sentiment=f"{sentiments}", subjectivity=f"{subjectivity}")
+                        session.add(search)
+                        session.commit()
+                        st.success('Data Saved')
+                    except Exception as e:
+                        st.error('Something went wrong')
+                        print(e)
 
 
 @st.cache()

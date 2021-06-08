@@ -9,7 +9,7 @@ Base = declarative_base()
 
 class Search(Base):
 
-    __tablename__ = "users"
+    __tablename__ = "searches"
 
     id = Column(Integer, primary_key=True)
     keyword = Column(String)
