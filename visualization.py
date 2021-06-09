@@ -7,13 +7,13 @@ import matplotlib as plt
 
 def plotBar(x, y, title="default title", xlabel="", ylabel=""):
     # Use the hovertext kw argument for hover text
-    fig = go.Figure(data=[go.Bar(x=x, y=y)])
+    fig1 = go.Figure(data=[go.Bar(x=x, y=y)])
     # Customize aspect
-    fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+    fig1.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
                       marker_line_width=1.5, opacity=0.6)
-    fig.update_layout(title_text=title)
+    fig1.update_layout(title_text=title)
 
-    return fig
+    return fig1
 
 
 def plotHistogram(dataframe, x, title="default title"):
@@ -31,11 +31,11 @@ def plotHistogram(dataframe, x, title="default title"):
 
 def plotpie(labels, values, title):
     layout = go.Layout(title=title, template="plotly_dark")
-    fig = go.Figure(layout=layout)
-    fig.add_trace(go.Pie(labels=labels, values=values, textinfo='label+percent', hole=0.2,
+    fig2 = go.Figure(layout=layout)
+    fig2.add_trace(go.Pie(labels=labels, values=values, textinfo='label+percent', hole=0.2,
                          marker=dict(colors=['#f7d468', '#74cb35'],
                                      line_color='Gray',
                                      line_width=1),
                          textfont={'color': '#000', 'size': 12},
                          textfont_size=12))
-    return fig
+    return fig2

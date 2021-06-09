@@ -1,13 +1,14 @@
-from os import name
-from typing import Counter
+from os import fdopen, name
+from typing import Container, Counter
 import nltk
 # nltk.download('stopwords')
 # nltk.download('wordnet')
 import re
+from numpy import negative, positive
 # from nltk.corpus import stopwords
 # from nltk.stem import SnowballStemmer, WordNetLemmatizer
 # from nltk.tokenize import RegexpTokenizer
-from textblob import TextBlob
+from textblob import TextBlob, sentiments
 import streamlit as st
 import pandas as pd
 # from streamlit.elements.image import _format_from_image_type
@@ -136,24 +137,35 @@ def fetchTweets(keyword, c):
     raw_tweets = []
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
-    cleaned_tweets = cleanTweets(raw_tweets)
+    cleaned_tweets = cleantweets(raw_tweets)
 
     return cleaned_tweets
 
+    @st.cache(suppress_st_warning=True)
 
-def cleanTweets(tweets):
+    def cleantweets(tweets):
+        cleanedtweets = []
 
-    cleanedtweets = []
-    for twt in tweets:
-        tweet = list()
-        word = twt.split()
-        for w in word:
-            tweet.append(w)
-        tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
-        cleanedtweets.append(' '.join(tweet))
+        for twt in tweets:
+            tweet = list()
+            word = twt.split()
+            for w in word:
+                tweet.append(w)
+                tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
 
-    return cleanedtweets
+                cleanedtweets.append('' .join(tweet))
+                for t in cleaned_tweets:
+                    st.write(t)
+                    analysis = TextBlob(t)
+                    st.write(analysis.sentiment)
+                    if(analysis.sentiment[0]>0):
+                        st.write(positive)
+                    else:
+                        st.write(negative) 
 
+
+
+    return cleaned_tweets
 
 def generateSentiment(tweets):
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
@@ -189,20 +201,32 @@ def visualize(sentiments, subjctivity):
     st.header("Subjectivity Results")
     df = pd.DataFrame(subjctivity).rename(columns={0: 'Subjectivity'})
     st.dataframe(df)
-    fig = plotHistogram(df, 'Subjectivity')
-    st.plotly_chart(fig)
+    fig= plotHistogram(df, 'Subjectivity')
+
     # fig, ax = plt.subplots()
     # ax.hist(subjctivity, bins=20)
     # st.pyplot(fig)
     # df1 = pd.DataFrame(sentiments)
     # st.dataframe(df1)
 
-    pie_fig = plotpie(tuple(sentiments.keys()), list(
+    pie_fig2 = plotpie(tuple(sentiments.keys()), list(
         sentiments.values()), 'My title')
-    st.plotly_chart(pie_fig)
+    st.plotly_chart(pie_fig2)
+    col1, col2 =st.beta_columns([3,1])
+    col1.subheader("A wide column with  a chart")
+    col1.plotly_chart(fig)
 
-    # fig=piechart(df,'sentimentList')
-    col1, col2, col3 = st.beta_columns(3)
+    col2.subheader("A narrow column with the data")
+    col2.plotly_chart(pie_fig2)
+
+    # fig2=piechart(df,'sentimentList')
+
+
+
+
+
+
+
 
 
 if selOpt == choices[1]:
