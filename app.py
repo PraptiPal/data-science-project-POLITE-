@@ -4,6 +4,7 @@ import nltk
 # nltk.download('stopwords')
 # nltk.download('wordnet')
 import re
+from numpy import negative, positive
 # from nltk.corpus import stopwords
 # from nltk.stem import SnowballStemmer, WordNetLemmatizer
 # from nltk.tokenize import RegexpTokenizer
@@ -28,12 +29,12 @@ st.image('NLP.jpg')
 
 sidebar = st.sidebar
 sidebar.header("Choose Your Option")
-choices = ["Select any option below", "Project Overview", "Analyse Tweets"]
+choices = ["Project Overview", "Analyse Tweets"]
 selOpt = sidebar.selectbox("Choose what to do", choices)
 
 
 def ProjectOverview():
-    st.image('sentiment_analysis.jpg')
+    st.image('sentiment-analysis.gif')
     st.markdown("""
     ## Reviewing the sentiments 
     Polite?
@@ -41,10 +42,10 @@ def ProjectOverview():
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
     """,unsafe_allow_html=True)
     st.header('Flowchart that represents the detailed process to handle the tweets')
+    st.write('')
     st.image('Flow-Chart-Sentiment-Analysis.png')
-
+ 
     st.markdown(f"""
-    ![alt text for screen readers](E:\data-science-project(POLITE)\sentiment_analysis.jpg "Text to show on mouseover")
     ### Features of Project
     1. Fetch the tweets from twitter using api
     2. Cleaning the tweets so as to accurately so that sentiment analyzing takes place accurately
@@ -63,24 +64,38 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
-            #st.markdown(f"""
-            #<img style="border-radius: 100%;" src="{user_details['avatar']}">
-            #<h2>{user_details['name']}</h2>
-            #""", unsafe_allow_html=True)
-
             st.markdown(f"""
-            <h1><b>User Account Details</b></h1>
-            <hr/>
             <img style="border-radius: 100%;" src="{user_details['avatar']}">
-            <table style = "width:100%">
-            <tr><td>Account Name {user_details['name']}</td></tr>
-            <tr><td>Handle Name {user_details['screen_name']}</td></tr>          
-            <tr><td>Account Description {user_details['description']}</td></tr>
-            <tr><td>Account created on {user_details['created']}</td></tr>
-            <tr><td>Number Of Followers {user_details['followers']}</td></tr>
+            <h2>{user_details['name']}</h2>
+            """, unsafe_allow_html=True)
+            
+            st.markdown(f"""
+            <table border = "1">
+            <tr>
+            <th>Property</th>
+            <th>Value</th>
+            </tr>
+            <td>Account Name</td>
+            <td>{user_details['name']}</td>
+            </tr>
+            <tr><td> Handle Name </td>
+            <td>{user_details['screen_name']}</td>
+            </tr>
+            <tr>
+            <td>Account Description</td>
+            <td>{user_details['description']}</td>
+            </tr>
+            <tr>
+            <td>Account created on</td>
+            <td>{user_details['created']}</td>
+            </tr>
+            <tr>
+            <td>Followers</td>
+            <td>{user_details['followers']}</td>
+            </tr>
             </table>
             """,unsafe_allow_html=True)
-
+            
             #st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
@@ -99,7 +114,7 @@ def getuser(username):
     user_details = api.get_user(username)
     profile['name'] = user_details._json['name']
     profile['avatar'] = user_details._json['profile_image_url_https']
-    profile['screen_name'] = user_details._json['profile_image_url_https']
+    profile['screen_name'] = user_details._json['screen_name']
     profile['description']=user_details._json['description']
     profile['created']=user_details._json['created_at']
     profile['followers']=user_details._json['followers_count']
@@ -116,7 +131,7 @@ def fetchTweets(keyword, c):
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
     cleaned_tweets = cleanTweets(raw_tweets)
-
+    
     return cleaned_tweets
 
 
@@ -130,11 +145,11 @@ def cleanTweets(tweets):
             tweet.append(w)
         tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
         cleanedtweets.append(' '.join(tweet))
-
     return cleanedtweets
 
 
 def generateSentiment(tweets):
+
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
     for tweet in tweets:
@@ -147,7 +162,7 @@ def generateSentiment(tweets):
         elif(blob.sentiment.polarity == 0):
             sentimentList['neutral'] += 1
 
-    if sentimentList['positive']> sentimentList['neutral'] & sentimentList['postive'] > sentimentList['negative']:
+    if sentimentList['positive']> sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
         st.write('mostly tweets are positive')
 
     # st.write(sentimentList)
@@ -158,33 +173,37 @@ def generateSentiment(tweets):
 
 def visualize(sentiments, subjctivity):
 
-    st.header("Sentiment Results")
-
-    fig = plotBar(tuple(sentiments.keys()), list(
-        sentiments.values()), 'My title')
-
-    st.plotly_chart(fig)
-
-    st.header("Subjectivity Results")
     df = pd.DataFrame(subjctivity).rename(columns={0: 'Subjectivity'})
-    st.dataframe(df)
     fig = plotHistogram(df, 'Subjectivity')
-    st.plotly_chart(fig)
-    # fig, ax = plt.subplots()
-    # ax.hist(subjctivity, bins=20)
-    # st.pyplot(fig)
-    # df1 = pd.DataFrame(sentiments)
-    # st.dataframe(df1)
+
+    fig1 = plotBar(tuple(sentiments.keys()), list(
+        sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
 
     pie_fig = plotpie(tuple(sentiments.keys()), list(
         sentiments.values()), 'My title')
-    st.plotly_chart(pie_fig)
-
-    # fig=piechart(df,'sentimentList')
-    col1, col2, col3 = st.beta_columns(3)
 
 
-if selOpt == choices[1]:
+    st.header("Subjectivity Results")
+    col1, col2 = st.beta_columns([2, 2])
+    col1.subheader("A histogram showing the subjectivity of the tweets")
+    col1.plotly_chart(fig)
+    col2.subheader("Dataframe showing the subjectivity")
+    col2.dataframe(df)
+    
+    st.header("Sentiment Results")
+    col1, col2 = st.beta_columns([3,1])
+    col1.subheader("Line chart showing the count of positive, negative and neutral tweets")
+    col1.plotly_chart(fig1)
+    col2.subheader("Pie chart to show it in percentage form")
+    col2.plotly_chart(pie_fig)
+    
+    
+    
+
+
+if selOpt == choices[0]:
     ProjectOverview()
-if selOpt == choices[2]:
+if selOpt == choices[1]:    
     AnalyseSentiment()
+
+
