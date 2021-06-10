@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib as plt
 
 
-def plotBar(x, y, title="default title", xlabel="", ylabel=""):
+def plotBar(x, y, title="Bar Chart showing the count of tweets ", xlabel="", ylabel=""):
     # Use the hovertext kw argument for hover text
     fig1 = go.Figure(data=[go.Bar(x=x, y=y)])
     # Customize aspect
@@ -16,7 +16,7 @@ def plotBar(x, y, title="default title", xlabel="", ylabel=""):
     return fig1
 
 
-def plotHistogram(dataframe, x, title="default title"):
+def plotHistogram(dataframe, x, title="A Histogram determining the subjectivity of the tweets"):
     # Use the hovertext kw argument for hover text
     fig = px.histogram(dataframe, x=x, nbins=10,
                        title=title,
