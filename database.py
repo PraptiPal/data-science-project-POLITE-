@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
-today = datetime.strftime(datetime.today(), '%d/%MM/%yyyy')
+today = datetime.strftime(datetime.today(), '%d/%M/%y')
 
 Base = declarative_base()
 
