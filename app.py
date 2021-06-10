@@ -11,6 +11,7 @@ from numpy import negative, positive
 from textblob import TextBlob, sentiments
 import streamlit as st
 import pandas as pd
+from textblob.blob import Word
 # from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
 import matplotlib.pyplot as plt
@@ -137,40 +138,39 @@ def fetchTweets(keyword, c):
     raw_tweets = []
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
-    cleaned_tweets = cleantweets(raw_tweets)
+    cleaned_Tweets = cleanTweets(raw_tweets)
 
-    return cleaned_tweets
-
-    @st.cache(suppress_st_warning=True)
-
-    def cleantweets(tweets):
-        cleanedtweets = []
-
-        for twt in tweets:
-            tweet = list()
-            word = twt.split()
-            for w in word:
-                tweet.append(w)
-                tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
-
-                cleanedtweets.append('' .join(tweet))
-                for t in cleaned_tweets:
-                    st.write(t)
-                    analysis = TextBlob(t)
-                    st.write(analysis.sentiment)
-                    if(analysis.sentiment[0]>0):
-                        st.write(positive)
-                    else:
-                        st.write(negative) 
+    return cleaned_Tweets
+    
 
 
+def cleanTweets(tweets):
+    cleanedtweets = []
+    for twt in tweets:
+        tweet = list()
+        Word = twt.split()
+        for w in Word:
+            tweet.append(w)
+        tweet = [re.sub(r' [^A-Za-z0-9]+' , '', x)for x in tweet]  
+        cleanedtweets.append(''.join(tweet))
+    return cleanedtweets      
 
-    return cleaned_tweets
+            
 
 def generateSentiment(tweets):
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
     for tweet in tweets:
+        st.write(tweet)
+        analysis=TextBlob(tweet)
+        st.write(analysis.sentiment)
+        if analysis.sentiment[0]>0:
+            st.write('positive')
+
+        else:
+            st.write('negative')    
+
+
         blob = TextBlob(tweet)
         subjctivity.append(blob.subjectivity)
         if(blob.sentiment.polarity > 0):
