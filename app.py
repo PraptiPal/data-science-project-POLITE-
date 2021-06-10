@@ -50,11 +50,7 @@ def ProjectOverview():
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
     """, unsafe_allow_html=True)
     st.header('Flowchart that represents the detailed process to handle the tweets')
-<<<<<<< HEAD
     st.write('')
-=======
-    st.markdown('#')
->>>>>>> 3d7bdf20df71a20b1624c5372e2233a652dcb149
     st.image('Flow-Chart-Sentiment-Analysis.png')
  
     st.markdown(f"""
@@ -76,7 +72,6 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
-<<<<<<< HEAD
             st.markdown(f"""
             <img style="border-radius: 100%;" src="{user_details['avatar']}">
             <h2>{user_details['name']}</h2>
@@ -110,27 +105,6 @@ def AnalyseSentiment():
             """,unsafe_allow_html=True)
             
             #st.write(user_details)
-=======
-            # st.markdown(f"""
-            # <img style="border-radius: 100%;" src="{user_details['avatar']}">
-            # <h2>{user_details['name']}</h2>
-            # """, unsafe_allow_html=True)
-
-            st.markdown(f"""
-                <h1><b>User Account Details</b></h1>
-                <hr/>
-                <img style="border-radius: 100%;" src="{user_details['avatar']}">
-                <table style = "width:100%">
-                <tr><td>Account Name : {user_details['name']}</td></tr>
-                <tr><td>Handle Name {user_details['screen_name']}</td></tr>          
-                <tr><td>Account Description {user_details['description']}</td></tr>
-                <tr><td>Account created on {user_details['created']}</td></tr>
-                <tr><td>Number Of Followers {user_details['followers']}</td></tr>
-                </table>
-                """, unsafe_allow_html=True)
-
-            # st.write(user_details)
->>>>>>> 3d7bdf20df71a20b1624c5372e2233a652dcb149
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
@@ -208,11 +182,7 @@ def generateSentiment(tweets):
         elif(blob.sentiment.polarity == 0):
             sentimentList['neutral'] += 1
 
-<<<<<<< HEAD
     if sentimentList['positive']> sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
-=======
-    if sentimentList['positive'] > sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
->>>>>>> 3d7bdf20df71a20b1624c5372e2233a652dcb149
         st.write('mostly tweets are positive')
 
     # st.write(sentimentList)
