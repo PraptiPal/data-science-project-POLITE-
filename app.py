@@ -1,5 +1,5 @@
-from os import name
-from typing import Counter
+from os import fdopen, name
+from typing import Container, Counter
 import nltk
 # nltk.download('stopwords')
 # nltk.download('wordnet')
@@ -8,9 +8,10 @@ from numpy import negative, positive
 # from nltk.corpus import stopwords
 # from nltk.stem import SnowballStemmer, WordNetLemmatizer
 # from nltk.tokenize import RegexpTokenizer
-from textblob import TextBlob
+from textblob import TextBlob, sentiments
 import streamlit as st
 import pandas as pd
+from textblob.blob import Word
 # from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
 import matplotlib.pyplot as plt
@@ -150,29 +151,52 @@ def fetchTweets(keyword, c):
     raw_tweets = []
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
+<<<<<<< HEAD
+    cleaned_Tweets = cleanTweets(raw_tweets)
+
+    return cleaned_Tweets
+    
+=======
     cleaned_tweets = cleanTweets(raw_tweets)
     
     return cleaned_tweets
+>>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
 
 def cleanTweets(tweets):
-
     cleanedtweets = []
     for twt in tweets:
         tweet = list()
-        word = twt.split()
-        for w in word:
+        Word = twt.split()
+        for w in Word:
             tweet.append(w)
+<<<<<<< HEAD
+        tweet = [re.sub(r' [^A-Za-z0-9]+' , '', x)for x in tweet]  
+        cleanedtweets.append(''.join(tweet))
+    return cleanedtweets      
+=======
         tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
         cleanedtweets.append(' '.join(tweet))
     return cleanedtweets
+>>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
+            
 
 def generateSentiment(tweets):
 
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
     for tweet in tweets:
+        st.write(tweet)
+        analysis=TextBlob(tweet)
+        st.write(analysis.sentiment)
+        if analysis.sentiment[0]>0:
+            st.write('positive')
+
+        else:
+            st.write('negative')    
+
+
         blob = TextBlob(tweet)
         subjctivity.append(blob.subjectivity)
         if(blob.sentiment.polarity > 0):
@@ -194,13 +218,42 @@ def generateSentiment(tweets):
 def visualize(sentiments, subjctivity):
 
     df = pd.DataFrame(subjctivity).rename(columns={0: 'Subjectivity'})
+<<<<<<< HEAD
+    st.dataframe(df)
+    fig= plotHistogram(df, 'Subjectivity')
+
+    # fig, ax = plt.subplots()
+    # ax.hist(subjctivity, bins=20)
+    # st.pyplot(fig)
+    # df1 = pd.DataFrame(sentiments)
+    # st.dataframe(df1)
+=======
     fig = plotHistogram(df, 'Subjectivity')
 
     fig1 = plotBar(tuple(sentiments.keys()), list(
         sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
+>>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
-    pie_fig = plotpie(tuple(sentiments.keys()), list(
+    pie_fig2 = plotpie(tuple(sentiments.keys()), list(
         sentiments.values()), 'My title')
+<<<<<<< HEAD
+    st.plotly_chart(pie_fig2)
+    col1, col2 =st.beta_columns([3,1])
+    col1.subheader("A wide column with  a chart")
+    col1.plotly_chart(fig)
+
+    col2.subheader("A narrow column with the data")
+    col2.plotly_chart(pie_fig2)
+
+    # fig2=piechart(df,'sentimentList')
+
+
+
+
+
+
+
+=======
 
 
     st.header("Subjectivity Results")
@@ -219,6 +272,7 @@ def visualize(sentiments, subjctivity):
     
     
     
+>>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
 
 if selOpt == choices[0]:
