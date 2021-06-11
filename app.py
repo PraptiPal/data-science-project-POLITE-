@@ -38,7 +38,7 @@ st.image('NLP.jpg')
 
 sidebar = st.sidebar
 sidebar.header("Choose Your Option")
-choices = ["Project Overview", "Analyse Tweets"]
+choices = ["Project Overview", "Analyse Tweets", "View Previous Searches"]
 selOpt = sidebar.selectbox("Choose what to do", choices)
 
 
@@ -53,7 +53,7 @@ def ProjectOverview():
     st.header('Flowchart that represents the detailed process to handle the tweets')
     st.write('')
     st.image('Flow-Chart-Sentiment-Analysis.png')
- 
+
     st.markdown(f"""
     ### Features of Project
     1. Fetch the tweets from twitter using api
@@ -67,7 +67,8 @@ def ProjectOverview():
 
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
-        user_input = st.text_input("Enter the Twitter Handle or Hashtag")
+        user_input = st.text_input(
+            "Enter the Twitter Handle or Hashtag", value="@Kurz_Gesagt")
         tweet_count = st.text_input(
             "Enter the number of tweets you want to analyze")
         btn = st.checkbox('Submit')
@@ -77,35 +78,35 @@ def AnalyseSentiment():
             <img style="border-radius: 100%;" src="{user_details['avatar']}">
             <h2>{user_details['name']}</h2>
             """, unsafe_allow_html=True)
-            
+
             st.markdown(f"""
-            <table border = "1">
-            <tr>
-            <th>Property</th>
-            <th>Value</th>
-            </tr>
-            <td>Account Name</td>
-            <td>{user_details['name']}</td>
-            </tr>
-            <tr><td> Handle Name </td>
-            <td>{user_details['screen_name']}</td>
-            </tr>
-            <tr>
-            <td>Account Description</td>
-            <td>{user_details['description']}</td>
-            </tr>
-            <tr>
-            <td>Account created on</td>
-            <td>{user_details['created']}</td>
-            </tr>
-            <tr>
-            <td>Followers</td>
-            <td>{user_details['followers']}</td>
-            </tr>
-            </table>
-            """,unsafe_allow_html=True)
-            
-            #st.write(user_details)
+                <table border = "1">
+                <tr>
+                <th>Property</th>
+                <th>Value</th>
+                </tr>
+                <td>Account Name</td>
+                <td>{user_details['name']}</td>
+                </tr>
+                <tr><td> Handle Name </td>
+                <td>{user_details['screen_name']}</td>
+                </tr>
+                <tr>
+                <td>Account Description</td>
+                <td>{user_details['description']}</td>
+                </tr>
+                <tr>
+                <td>Account created on</td>
+                <td>{user_details['created']}</td>
+                </tr>
+                <tr>
+                <td>Followers</td>
+                <td>{user_details['followers']}</td>
+                </tr>
+                </table>
+                """, unsafe_allow_html=True)
+
+            # st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
@@ -136,9 +137,9 @@ def getuser(username):
     profile['name'] = user_details._json['name']
     profile['avatar'] = user_details._json['profile_image_url_https']
     profile['screen_name'] = user_details._json['screen_name']
-    profile['description']=user_details._json['description']
-    profile['created']=user_details._json['created_at']
-    profile['followers']=user_details._json['followers_count']
+    profile['description'] = user_details._json['description']
+    profile['created'] = user_details._json['created_at']
+    profile['followers'] = user_details._json['followers_count']
     return profile
 
 
@@ -151,16 +152,9 @@ def fetchTweets(keyword, c):
     raw_tweets = []
     for tweet in tweets_data:
         raw_tweets.append(tweet.text)
-<<<<<<< HEAD
-    cleaned_Tweets = cleanTweets(raw_tweets)
-
-    return cleaned_Tweets
-    
-=======
     cleaned_tweets = cleanTweets(raw_tweets)
-    
+
     return cleaned_tweets
->>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
 
 def cleanTweets(tweets):
@@ -170,17 +164,10 @@ def cleanTweets(tweets):
         Word = twt.split()
         for w in Word:
             tweet.append(w)
-<<<<<<< HEAD
-        tweet = [re.sub(r' [^A-Za-z0-9]+' , '', x)for x in tweet]  
-        cleanedtweets.append(''.join(tweet))
-    return cleanedtweets      
-=======
         tweet = [re.sub(r'[^A-Za-z0-9]+', '', x) for x in tweet]
         cleanedtweets.append(' '.join(tweet))
     return cleanedtweets
->>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
-            
 
 def generateSentiment(tweets):
 
@@ -188,14 +175,13 @@ def generateSentiment(tweets):
     subjctivity = []
     for tweet in tweets:
         st.write(tweet)
-        analysis=TextBlob(tweet)
+        analysis = TextBlob(tweet)
         st.write(analysis.sentiment)
-        if analysis.sentiment[0]>0:
+        if analysis.sentiment[0] > 0:
             st.write('positive')
 
         else:
-            st.write('negative')    
-
+            st.write('negative')
 
         blob = TextBlob(tweet)
         subjctivity.append(blob.subjectivity)
@@ -206,7 +192,7 @@ def generateSentiment(tweets):
         elif(blob.sentiment.polarity == 0):
             sentimentList['neutral'] += 1
 
-    if sentimentList['positive']> sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
+    if sentimentList['positive'] > sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
         st.write('mostly tweets are positive')
 
     # st.write(sentimentList)
@@ -218,43 +204,13 @@ def generateSentiment(tweets):
 def visualize(sentiments, subjctivity):
 
     df = pd.DataFrame(subjctivity).rename(columns={0: 'Subjectivity'})
-<<<<<<< HEAD
-    st.dataframe(df)
-    fig= plotHistogram(df, 'Subjectivity')
-
-    # fig, ax = plt.subplots()
-    # ax.hist(subjctivity, bins=20)
-    # st.pyplot(fig)
-    # df1 = pd.DataFrame(sentiments)
-    # st.dataframe(df1)
-=======
     fig = plotHistogram(df, 'Subjectivity')
 
     fig1 = plotBar(tuple(sentiments.keys()), list(
         sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
->>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
 
     pie_fig2 = plotpie(tuple(sentiments.keys()), list(
         sentiments.values()), 'My title')
-<<<<<<< HEAD
-    st.plotly_chart(pie_fig2)
-    col1, col2 =st.beta_columns([3,1])
-    col1.subheader("A wide column with  a chart")
-    col1.plotly_chart(fig)
-
-    col2.subheader("A narrow column with the data")
-    col2.plotly_chart(pie_fig2)
-
-    # fig2=piechart(df,'sentimentList')
-
-
-
-
-
-
-
-=======
-
 
     st.header("Subjectivity Results")
     col1, col2 = st.beta_columns(2)
@@ -262,22 +218,38 @@ def visualize(sentiments, subjctivity):
     col1.plotly_chart(fig)
     col2.subheader("Dataframe showing the subjectivity")
     col2.dataframe(df)
-    
+
     st.header("Sentiment Results")
     col1, col2 = st.beta_columns(2)
-    col1.subheader("Line chart showing the count of positive, negative and neutral tweets")
+    col1.subheader(
+        "Line chart showing the count of positive, negative and neutral tweets")
     col1.plotly_chart(fig1)
     col2.subheader("Pie chart to show it in percentage form")
-    col2.plotly_chart(pie_fig)
-    
-    
-    
->>>>>>> 199b62b9bec4700fe6b7b3f50a8d9cbc1562e9b1
+    col2.plotly_chart(pie_fig2)
+
+def viewPrevious():
+    try:
+        searches = session.query(Search).all()
+        keywords = [search.keyword for search in searches]
+
+        selKeyword = st.selectbox(options= keywords, label="Select Keyword")
+
+        selObj = session.query(Search).filter_by(keyword = selKeyword ).first()
+
+        st.markdown(f"""
+            ### Date : {selObj.date}
+        """)
+
+    except Exception as e:
+        st.error('Something went wrong')
+        print(e)
+
+
 
 
 if selOpt == choices[0]:
     ProjectOverview()
-if selOpt == choices[1]:    
+elif selOpt == choices[1]:
     AnalyseSentiment()
-
-
+elif selOpt == choices[2]:
+    viewPrevious()
