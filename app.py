@@ -37,22 +37,20 @@ st.image('NLP.jpg')
 
 sidebar = st.sidebar
 sidebar.header("Choose Your Option")
-choices = ["Project Overview", "Analyse Tweets"]
+choices = ["Project Overview", "Analyse Tweets","View Data"]
 selOpt = sidebar.selectbox("Choose what to do", choices)
 
 
 def ProjectOverview():
-    st.image('sentiment-analysis.gif')
+   
     st.markdown("""
     ## Reviewing the sentiments 
     Polite?
     :What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user.
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
     """, unsafe_allow_html=True)
-    st.header('Flowchart that represents the detailed process to handle the tweets')
-    st.write('')
-    st.image('Flow-Chart-Sentiment-Analysis.png')
- 
+    
+    st.image('sentiment-analysis.gif')
     st.markdown(f"""
     ### Features of Project
     1. Fetch the tweets from twitter using api
@@ -62,6 +60,10 @@ def ProjectOverview():
     4. The best way to understand the analysis is through visualization. The results are displayed in form of graphs
     for a better understanding. 
     """, unsafe_allow_html=True)
+
+    st.header('Flowchart that represents the detailed process to handle the tweets')
+    st.write('')
+    st.image('Flow-Chart-Sentiment-Analysis.png')
 
 
 def AnalyseSentiment():
@@ -101,10 +103,13 @@ def AnalyseSentiment():
             <td>Followers</td>
             <td>{user_details['followers']}</td>
             </tr>
+            <tr>
+            <td>Profile Verification</td>
+            <td>{user_details['verified']}</td>
+            </tr>
             </table>
             """,unsafe_allow_html=True)
             
-            #st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
@@ -122,9 +127,12 @@ def AnalyseSentiment():
                         session.add(search)
                         session.commit()
                         st.success('Data Saved')
+                        
                     except Exception as e:
                         st.error('Something went wrong')
                         print(e)
+
+                    
 
 
 @st.cache()
@@ -138,6 +146,7 @@ def getuser(username):
     profile['description']=user_details._json['description']
     profile['created']=user_details._json['created_at']
     profile['followers']=user_details._json['followers_count']
+    profile['verified'] = user_details._json['verified']
     return profile
 
 
@@ -200,23 +209,22 @@ def visualize(sentiments, subjctivity):
         sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
 
     pie_fig = plotpie(tuple(sentiments.keys()), list(
-        sentiments.values()), 'My title')
+        sentiments.values()), 'Pie chart ')
 
 
     st.header("Subjectivity Results")
-    col1, col2 = st.beta_columns([2, 2])
+    col1, col2 = st.beta_columns(2)
     col1.subheader("A histogram showing the subjectivity of the tweets")
     col1.plotly_chart(fig)
     col2.subheader("Dataframe showing the subjectivity")
     col2.dataframe(df)
     
     st.header("Sentiment Results")
-    col1, col2 = st.beta_columns([3,1])
+    col1, col2 = st.beta_columns(2)
     col1.subheader("Line chart showing the count of positive, negative and neutral tweets")
     col1.plotly_chart(fig1)
     col2.subheader("Pie chart to show it in percentage form")
     col2.plotly_chart(pie_fig)
-    
     
     
 
@@ -225,5 +233,7 @@ if selOpt == choices[0]:
     ProjectOverview()
 if selOpt == choices[1]:    
     AnalyseSentiment()
+if selOpt == choices[2]:
+    ViewData()
 
 
