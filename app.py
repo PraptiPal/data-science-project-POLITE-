@@ -1,18 +1,12 @@
 from os import fdopen, name
 from typing import Container, Counter
 import nltk
-# nltk.download('stopwords')
-# nltk.download('wordnet')
 import re
-from numpy import negative, positive
-# from nltk.corpus import stopwords
-# from nltk.stem import SnowballStemmer, WordNetLemmatizer
-# from nltk.tokenize import RegexpTokenizer
+from numpy import average, negative, positive
 from textblob import TextBlob, sentiments
 import streamlit as st
 import pandas as pd
 from textblob.blob import Word
-# from streamlit.elements.image import _format_from_image_type
 from tweepy_init import create_api
 import matplotlib.pyplot as plt
 from visualization import *
@@ -50,10 +44,8 @@ def ProjectOverview():
     :What does Polite Do? The project is designed and developed to analyze the sentiments mentioned in the tweet of an user.
     It analyzes whether a tweet is written to send positive message or negative message or is a neutral sentence.
     """, unsafe_allow_html=True)
-    st.header('Flowchart that represents the detailed process to handle the tweets')
+    st.image('sentiment-analysis.gif')
     st.write('')
-    st.image('Flow-Chart-Sentiment-Analysis.png')
-
     st.markdown(f"""
     ### Features of Project
     1. Fetch the tweets from twitter using api
@@ -107,6 +99,10 @@ def AnalyseSentiment():
                 <td>Followers</td>
                 <td>{user_details['followers']}</td>
                 </tr>
+                <tr>
+                <td>Profile Verified</td>
+                <td>{user_details['verified']}</td>
+                </tr>
                 </table>
                 """, unsafe_allow_html=True)
 
@@ -117,7 +113,7 @@ def AnalyseSentiment():
 
             btn = st.checkbox('Visualize Result')
             if btn:
-                sentiments, subjectivity = generateSentiment(pre_tweets)
+                sentiments, subjectivity = generateSentiment(pre_tweets, tweet_count)
                 visualize(sentiments, subjectivity)
 
                 saveData = st.checkbox('Save Data')
@@ -147,6 +143,7 @@ def getuser(username):
     profile['description'] = user_details._json['description']
     profile['created'] = user_details._json['created_at']
     profile['followers'] = user_details._json['followers_count']
+    profile['verified']  = user_details._json['verified']
     return profile
 
 
@@ -176,8 +173,8 @@ def cleanTweets(tweets):
     return cleanedtweets
 
 
-def generateSentiment(tweets):
-
+def generateSentiment(tweets,count):
+    n= float(count)
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
     for tweet in tweets:
@@ -186,9 +183,10 @@ def generateSentiment(tweets):
         st.write(analysis.sentiment)
         if analysis.sentiment[0] > 0:
             st.write('positive')
-
-        else:
+        elif analysis.sentiment[0] < 0:
             st.write('negative')
+        else:
+            st.write('neutral')
 
         blob = TextBlob(tweet)
         subjctivity.append(blob.subjectivity)
@@ -201,10 +199,15 @@ def generateSentiment(tweets):
 
     if sentimentList['positive'] > sentimentList['neutral'] & sentimentList['positive'] > sentimentList['negative']:
         st.write('mostly tweets are positive')
-
-    # st.write(sentimentList)
-    # st.write(subjctivity)
-    # visualize(sentimentList, subjctivity)
+    elif sentimentList['negative'] > sentimentList['neutral'] & sentimentList['negative'] > sentimentList['positive']:
+        st.write('mostly tweets are negative')
+    else:
+        st.write('Mostly tweets are neutral')
+    total =0
+    for s in subjctivity:
+        total+=float(s)
+    average= float(total/n)
+    st.write(f'The average subjectivity for the tweets are {average}')
     return sentimentList, subjctivity
 
 
@@ -217,7 +220,7 @@ def visualize(sentiments, subjctivity):
         sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
 
     pie_fig2 = plotpie(tuple(sentiments.keys()), list(
-        sentiments.values()), 'My title')
+        sentiments.values()), 'Pie Chart')
 
     st.header("Subjectivity Results")
     col1, col2 = st.beta_columns(2)
@@ -234,6 +237,8 @@ def visualize(sentiments, subjctivity):
     col2.subheader("Pie chart to show it in percentage form")
     col2.plotly_chart(pie_fig2)
 
+
+
 def viewPrevious():
     try:
         searches = session.query(Search).all()
@@ -246,6 +251,15 @@ def viewPrevious():
         st.markdown(f"""
             ### Date : {selObj.date}
         """)
+
+        st.markdown(f"""
+            ### Sentiment : {selObj.sentiment}
+        """)
+        
+        st.markdown(f"""
+            ### Subjectivity : {selObj.subjectivity}
+        """)
+
 
     except Exception as e:
         st.error('Something went wrong')

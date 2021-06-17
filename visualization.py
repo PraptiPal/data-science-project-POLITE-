@@ -9,7 +9,7 @@ def plotBar(x, y, title="Bar Chart showing the count of tweets ", xlabel="", yla
     # Use the hovertext kw argument for hover text
     fig1 = go.Figure(data=[go.Bar(x=x, y=y)])
     # Customize aspect
-    fig1.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+    fig1.update_traces(marker_color='rgb', marker_line_color='forestgreen',
                       marker_line_width=1.5, opacity=0.6)
     fig1.update_layout(title_text=title)
 
@@ -24,7 +24,7 @@ def plotHistogram(dataframe, x, title="A Histogram determining the subjectivity 
                        opacity=0.8,
                        log_y=True,  # represent bars with log scale
                        # color of histogram bars
-                       color_discrete_sequence=['indianred']
+                       color_discrete_sequence=['mediumpurple']
                        )
 
     return fig
