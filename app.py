@@ -51,7 +51,7 @@ def ProjectOverview():
     1. Fetch the tweets from twitter using api
     2. Cleaning the tweets so as to accurately so that sentiment analyzing takes place accurately
     3. Counting the positive, negative and neutral tweets and also determining the subjectivity of the tweets.
-    **Parameters used to determin the sentiments are -- POLARITY and SUBJECTIVITY**
+    **Parameters used to determine the sentiments are -- POLARITY and SUBJECTIVITY**
     4. The best way to understand the analysis is through visualization. The results are displayed in form of graphs
     for a better understanding. 
     """, unsafe_allow_html=True)
@@ -70,6 +70,7 @@ def AnalyseSentiment():
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
+            st.write('Profile picture')
             st.markdown(f"""
             <img style="border-radius: 100%;" src="{user_details['avatar']}">
             <h2>{user_details['name']}</h2>
@@ -109,6 +110,14 @@ def AnalyseSentiment():
             # st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
+            #displaytweets = pre_tweets
+            for i in range(1,int(tweet_count)): 
+                st.markdown(f""" 
+                <table >  
+                <tr>{pre_tweets[i]}</tr>
+                </table>
+                """, unsafe_allow_html=True)
+            
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
             btn = st.checkbox('Visualize Result')
@@ -177,16 +186,18 @@ def generateSentiment(tweets,count):
     n= float(count)
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
+    btn = st.checkbox('View Sentiment by Tweets')
     for tweet in tweets:
-        st.write(tweet)
-        analysis = TextBlob(tweet)
-        st.write(analysis.sentiment)
-        if analysis.sentiment[0] > 0:
-            st.write('positive')
-        elif analysis.sentiment[0] < 0:
-            st.write('negative')
-        else:
-            st.write('neutral')
+        if btn:
+            st.write(tweet)
+            analysis = TextBlob(tweet)
+            st.write(analysis.sentiment)
+            if analysis.sentiment[0] > 0:
+                st.write('positive')
+            elif analysis.sentiment[0] < 0:
+                st.write('negative')
+            else:
+                st.write('neutral')
 
         blob = TextBlob(tweet)
         subjctivity.append(blob.subjectivity)
