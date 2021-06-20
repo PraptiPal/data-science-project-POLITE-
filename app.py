@@ -77,7 +77,7 @@ def AnalyseSentiment():
             """, unsafe_allow_html=True)
 
             st.markdown(f"""
-                <table border = "1">
+                <table border = "3">
                 <tr>
                 <th>Property</th>
                 <th>Value</th>
@@ -111,9 +111,9 @@ def AnalyseSentiment():
             pre_tweets = fetchTweets(user_input, tweet_count)
             st.write(pre_tweets)
             #displaytweets = pre_tweets
-            for i in range(1,int(tweet_count)): 
+            for i in range(1,int(tweet_count)+1): 
                 st.markdown(f""" 
-                <table >  
+                <table border = "2">  
                 <tr>{pre_tweets[i]}</tr>
                 </table>
                 """, unsafe_allow_html=True)
