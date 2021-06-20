@@ -35,9 +35,8 @@ sidebar.header("Choose Your Option")
 choices = ["Project Overview", "Analyse Tweets", "View Previous Searches"]
 selOpt = sidebar.selectbox("Choose what to do", choices)
 
-
 def ProjectOverview():
-   
+
     st.markdown("""
     ## Reviewing the sentiments 
     Polite?
@@ -63,10 +62,11 @@ def ProjectOverview():
 
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
+        show_tweets = sidebar.checkbox('Show Tweets')
         user_input = st.text_input(
             "Enter the Twitter Handle or Hashtag", value="@Kurz_Gesagt")
-        tweet_count = st.text_input(
-            "Enter the number of tweets you want to analyze")
+        tweet_count = st.number_input(
+            "Enter the number of tweets you want to analyze", step=1, min_value=1, max_value=500, value=50)
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
@@ -108,12 +108,14 @@ def AnalyseSentiment():
 
             # st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
-            st.write(pre_tweets)
+            if show_tweets:
+                st.write(pre_tweets)
             # from here we will write logic for generating sentiment and visualizing and storing in database
 
             btn = st.checkbox('Visualize Result')
             if btn:
-                sentiments, subjectivity = generateSentiment(pre_tweets, tweet_count)
+                sentiments, subjectivity = generateSentiment(
+                    pre_tweets, tweet_count)
                 visualize(sentiments, subjectivity)
 
                 saveData = st.checkbox('Save Data')
@@ -124,12 +126,10 @@ def AnalyseSentiment():
                         session.add(search)
                         session.commit()
                         st.success('Data Saved')
-                        
+
                     except Exception as e:
                         st.error('Something went wrong')
                         print(e)
-
-                    
 
 
 @st.cache()
@@ -143,7 +143,7 @@ def getuser(username):
     profile['description'] = user_details._json['description']
     profile['created'] = user_details._json['created_at']
     profile['followers'] = user_details._json['followers_count']
-    profile['verified']  = user_details._json['verified']
+    profile['verified'] = user_details._json['verified']
     return profile
 
 
@@ -173,8 +173,8 @@ def cleanTweets(tweets):
     return cleanedtweets
 
 
-def generateSentiment(tweets,count):
-    n= float(count)
+def generateSentiment(tweets, count):
+    n = float(count)
     sentimentList = {}.fromkeys(['positive', 'neutral', 'negative'], 0)
     subjctivity = []
     for tweet in tweets:
@@ -203,10 +203,10 @@ def generateSentiment(tweets,count):
         st.write('mostly tweets are negative')
     else:
         st.write('Mostly tweets are neutral')
-    total =0
+    total = 0
     for s in subjctivity:
-        total+=float(s)
-    average= float(total/n)
+        total += float(s)
+    average = float(total/n)
     st.write(f'The average subjectivity for the tweets are {average}')
     return sentimentList, subjctivity
 
@@ -238,15 +238,14 @@ def visualize(sentiments, subjctivity):
     col2.plotly_chart(pie_fig2)
 
 
-
 def viewPrevious():
     try:
         searches = session.query(Search).all()
         keywords = [search.keyword for search in searches]
 
-        selKeyword = st.selectbox(options= keywords, label="Select Keyword")
+        selKeyword = st.selectbox(options=keywords, label="Select Keyword")
 
-        selObj = session.query(Search).filter_by(keyword = selKeyword ).first()
+        selObj = session.query(Search).filter_by(keyword=selKeyword).first()
 
         st.markdown(f"""
             ### Date : {selObj.date}
@@ -255,17 +254,14 @@ def viewPrevious():
         st.markdown(f"""
             ### Sentiment : {selObj.sentiment}
         """)
-        
+
         st.markdown(f"""
             ### Subjectivity : {selObj.subjectivity}
         """)
 
-
     except Exception as e:
         st.error('Something went wrong')
         print(e)
-
-
 
 
 if selOpt == choices[0]:
