@@ -9,7 +9,7 @@ def plotBar(x, y, title="Bar Chart showing the count of tweets ", xlabel="", yla
     # Use the hovertext kw argument for hover text
     fig1 = go.Figure(data=[go.Bar(x=x, y=y)])
     # Customize aspect
-    fig1.update_traces(marker_color='rgb', marker_line_color='forestgreen',
+    fig1.update_traces(marker_color='rgb(0, 204, 194)', marker_line_color='forestgreen',
                       marker_line_width=1.5, opacity=0.6)
     fig1.update_layout(title_text=title)
 
