@@ -23,6 +23,7 @@ def init():
 api = init()
 
 st.title("Sentiment Analysis For Tweets ")
+st.write('')
 st.image('NLP.jpg')
 
 sidebar = st.sidebar
@@ -52,6 +53,7 @@ def ProjectOverview():
     """, unsafe_allow_html=True)
 
     st.header('Flowchart that represents the detailed process to handle the tweets')
+    st.write('')
     st.write('')
     st.image('Flow-Chart-Sentiment-Analysis.png')
 
