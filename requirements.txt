@@ -1,0 +1,9 @@
+streamlit == 0.80.0
+tweepy==3.10.0
+textblob==0.15.3
+SQLAlchemy==1.4.11
+regex==2021.4.4
+plotly==4.14.3
+pandas==1.2.4
+numpy==1.20.2
+matplotlib==3.4.1

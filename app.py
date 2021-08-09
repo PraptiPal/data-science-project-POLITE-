@@ -1,12 +1,7 @@
-from os import fdopen, name
-from typing import Container, Counter
-import nltk
 import re
-from numpy import average, negative, positive
-from textblob import TextBlob, sentiments
+from textblob import TextBlob
 import streamlit as st
 import pandas as pd
-from textblob.blob import Word
 from tweepy_init import create_api
 import matplotlib.pyplot as plt
 from visualization import *
@@ -28,6 +23,7 @@ def init():
 api = init()
 
 st.title("Sentiment Analysis For Tweets ")
+st.write('')
 st.image('NLP.jpg')
 
 sidebar = st.sidebar
@@ -58,16 +54,16 @@ def ProjectOverview():
 
     st.header('Flowchart that represents the detailed process to handle the tweets')
     st.write('')
+    st.write('')
     st.image('Flow-Chart-Sentiment-Analysis.png')
 
 
 def AnalyseSentiment():
     with st.spinner("Loading View... "):
-        show_tweets = sidebar.checkbox('Show Tweets')
         user_input = st.text_input(
-            "Enter the Twitter Handle or Hashtag", value="@Kurz_Gesagt")
+            "Enter the Twitter Handle or Hashtag")
         tweet_count = st.number_input(
-            "Enter the number of tweets you want to analyze", step=1, min_value=1, max_value=500, value=50)
+            "Enter the number of tweets you want to analyze", value=50)
         btn = st.checkbox('Submit')
         if user_input and btn:
             user_details = getuser(user_input)
@@ -78,7 +74,7 @@ def AnalyseSentiment():
             """, unsafe_allow_html=True)
 
             st.markdown(f"""
-                <table border = "1">
+                <table border = "3">
                 <tr>
                 <th>Property</th>
                 <th>Value</th>
@@ -110,12 +106,11 @@ def AnalyseSentiment():
 
             # st.write(user_details)
             pre_tweets = fetchTweets(user_input, tweet_count)
-            st.write(pre_tweets)
             #displaytweets = pre_tweets
-            for i in range(0, int(tweet_count-1)):
+            for i in pre_tweets:
                 st.markdown(f""" 
-                <table >  
-                <tr>{pre_tweets[i]}</tr>
+                <table border = "1" style = 'width:100%'>  
+                <tr>{i}</tr>
                 </table>
                 """, unsafe_allow_html=True)
 
@@ -244,11 +239,17 @@ def visualize(sentiments, subjctivity):
     col2.dataframe(df)
     
     st.header("Sentiment Results")
+<<<<<<< HEAD
     col1, col2 = st.beta_columns([3,1])
     col1.subheader("Line chart showing the count of positive, negative and neutral tweets")
+=======
+    col1, col2,col3 = st.beta_columns(3)
+    col1.subheader(
+        "Line chart showing the count of positive, negative and neutral tweets")
+>>>>>>> 2d606de3fe5e13c93e236f879f1ce9e661724385
     col1.plotly_chart(fig1)
-    col2.subheader("Pie chart to show it in percentage form")
-    col2.plotly_chart(pie_fig2)
+    col3.subheader("Pie chart to show it in percentage form")
+    col3.plotly_chart(pie_fig2)
 
 
     if selOpt == choices[0]:
