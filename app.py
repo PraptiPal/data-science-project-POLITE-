@@ -239,14 +239,9 @@ def visualize(sentiments, subjctivity):
     col2.dataframe(df)
     
     st.header("Sentiment Results")
-<<<<<<< HEAD
-    col1, col2 = st.beta_columns([3,1])
-    col1.subheader("Line chart showing the count of positive, negative and neutral tweets")
-=======
     col1, col2,col3 = st.beta_columns(3)
     col1.subheader(
         "Line chart showing the count of positive, negative and neutral tweets")
->>>>>>> 2d606de3fe5e13c93e236f879f1ce9e661724385
     col1.plotly_chart(fig1)
     col3.subheader("Pie chart to show it in percentage form")
     col3.plotly_chart(pie_fig2)
@@ -258,6 +253,7 @@ def visualize(sentiments, subjctivity):
         AnalyseSentiment()
     elif selOpt == choices[2]:
         viewPrevious()
+        
         
                 
     
