@@ -176,8 +176,6 @@ def cleanTweets(tweets):
         cleanedtweets.append(' '.join(tweet))
     return cleanedtweets
 
-            
-
 
 def generateSentiment(tweets, count):
     n = float(count)
@@ -228,16 +226,15 @@ def visualize(sentiments, subjctivity):
         sentiments.values()), 'Showing the count of positive negative and neutral tweets ')
 
     pie_fig2 = plotpie(tuple(sentiments.keys()), list(
-        sentiments.values()), 'My title')
-
+        sentiments.values()), 'Pie Chart')
 
     st.header("Subjectivity Results")
-    col1, col2 = st.beta_columns([2, 2])
+    col1, col2 = st.beta_columns(2)
     col1.subheader("A histogram showing the subjectivity of the tweets")
     col1.plotly_chart(fig)
     col2.subheader("Dataframe showing the subjectivity")
     col2.dataframe(df)
-    
+
     st.header("Sentiment Results")
     col1, col2,col3 = st.beta_columns(3)
     col1.subheader(
@@ -245,6 +242,7 @@ def visualize(sentiments, subjctivity):
     col1.plotly_chart(fig1)
     col3.subheader("Pie chart to show it in percentage form")
     col3.plotly_chart(pie_fig2)
+
 
 def viewPrevious():
     try:
@@ -269,18 +267,12 @@ def viewPrevious():
 
     except Exception as e:
         st.error('Something went wrong')
-        print(e)   
+        print(e)
 
 
-    if selOpt == choices[0]:
-        ProjectOverview()
-    elif selOpt == choices[1]:
-        AnalyseSentiment()
-    elif selOpt == choices[2]:
-        viewPrevious()
-        
-        
-                
-    
-
-
+if selOpt == choices[0]:
+    ProjectOverview()
+elif selOpt == choices[1]:
+    AnalyseSentiment()
+elif selOpt == choices[2]:
+    viewPrevious()
